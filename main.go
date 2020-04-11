@@ -4,6 +4,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/riadafridishibly/spi/ast"
 	"github.com/riadafridishibly/spi/lexer"
 	"github.com/riadafridishibly/spi/parser"
 	"os"
@@ -28,7 +29,9 @@ func main() {
 
 		lx := lexer.NewLexer(txt, 0)
 		prsr := parser.NewParser(lx)
-		res := prsr.Expr()
+		tree := prsr.Parse()
+
+		res := ast.Walk(tree)
 
 		fmt.Println(res)
 	}

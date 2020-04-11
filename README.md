@@ -4,5 +4,5 @@ This is going to be an implementation of pascal interpreter in golang.
 I'm following [this tutorial](https://ruslanspivak.com/lsbasi-part1/).
 
 ### Next thing to do
-- Implement AST
+- Implement AST :heavy_check_mark: 
 - Support Unary Operator
