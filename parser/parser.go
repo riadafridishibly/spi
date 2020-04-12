@@ -18,16 +18,32 @@ func NewParser(lex lexer.Lexer) Parser {
 }
 
 func (par *Parser) Factor() ast.Node {
-	// factor: factor | LPAREN expr RPAREN
-	// var res int64 = 0
-	var res ast.Node
+	// factor: (PLUS | MINUS) factor | INTEGER | LPAREN expr RPAREN
+	var node ast.Node
+
+	tok := par.currentToken
+
 	switch par.currentToken.Type {
+	case token.PLUS:
+		par.Consume(token.PLUS)
+		node = &ast.UnaryOp{
+			Token: tok,
+			Op:    tok,
+			Expr:  par.Factor(),
+		}
+	case token.MINUS:
+		par.Consume(token.MINUS)
+		node = &ast.UnaryOp{
+			Token: tok,
+			Op:    tok,
+			Expr:  par.Factor(),
+		}
 	case token.LPAREN:
 		par.Consume(token.LPAREN)
-		res = par.Expr()
+		node = par.Expr()
 		par.Consume(token.RPAREN)
 	case token.INTEGER:
-		res = &ast.Num{
+		node = &ast.Num{
 			Token: par.currentToken,
 			Value: par.currentToken.Value.(int64),
 		}
@@ -37,7 +53,7 @@ func (par *Parser) Factor() ast.Node {
 		panic("called with unknown token")
 
 	}
-	return res
+	return node
 }
 
 func (par *Parser) Consume(toktype token.TokenType) {
