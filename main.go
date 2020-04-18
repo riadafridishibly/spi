@@ -2,37 +2,32 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
+	"io/ioutil"
+	"os"
+
 	"github.com/riadafridishibly/spi/ast"
 	"github.com/riadafridishibly/spi/lexer"
 	"github.com/riadafridishibly/spi/parser"
-	"os"
-	"strings"
 )
 
 func main() {
-
-	scanner := bufio.NewScanner(os.Stdin)
-
-	out := func() bool {
-		fmt.Print("spi> ")
-		return true
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: ./spi <program-name>")
+		os.Exit(1)
 	}
 
-	for out() && scanner.Scan() {
+	filename := os.Args[1]
+	filedata, err := ioutil.ReadFile(filename)
 
-		txt := scanner.Text()
-		if strings.TrimSpace(txt) == "" {
-			continue
-		}
-
-		lx := lexer.NewLexer(txt, 0)
-		prsr := parser.NewParser(lx)
-		tree := prsr.Parse()
-
-		res := ast.Walk(tree)
-
-		fmt.Println(res)
+	if err != nil {
+		panic(err)
 	}
+
+	txt := string(filedata)
+
+	lx := lexer.NewLexer(txt, 0)
+	prsr := parser.NewParser(lx)
+	tree := prsr.Parse()
+	ast.Walk(tree)
 }

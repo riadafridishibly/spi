@@ -5,7 +5,22 @@ import "fmt"
 type TokenType int
 
 const (
-	INTEGER TokenType = iota
+	PROGRAM TokenType = iota
+	SEMI
+	DOT
+	VAR
+	ID
+	COMMA
+	COLON
+	INTEGER
+	REAL
+	BEGIN
+	END
+	ASSIGN
+	INTEGER_DIV
+	FLOAT_DIV
+	INTEGER_CONST
+	REAL_CONST
 	PLUS
 	MINUS
 	DIV
@@ -21,7 +36,22 @@ type Token struct {
 }
 
 var StrTok = [...]string{
+	"PROGRAM",
+	"SEMI",
+	"DOT",
+	"VAR",
+	"ID",
+	"COMMA",
+	"COLON",
 	"INTEGER",
+	"REAL",
+	"BEGIN",
+	"END",
+	"ASSIGN",
+	"INTEGER_DIV",
+	"FLOAT_DIV",
+	"INTEGER_CONST",
+	"REAL_CONST",
 	"PLUS",
 	"MINUS",
 	"DIV",

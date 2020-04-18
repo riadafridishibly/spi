@@ -1,7 +1,8 @@
 package lexer
 
 import (
-	"github.com/riadafridishibly/spi/token"
+	// "github.com/riadafridishibly/spi/token"
+	"fmt"
 	"testing"
 )
 
@@ -42,58 +43,44 @@ func TestInteger(t *testing.T) {
 	for _, tt := range testcases {
 		lx := NewLexer(tt.text, 0)
 
-		i := lx.integer()
+		i := lx.number()
 
-		if i != tt.want {
+		if i.Value.(int64) != tt.want {
 			t.Errorf("%+v, %v != %v\n", tt, i, tt.want)
 		}
 	}
 }
 
 func TestGetNextToken(t *testing.T) {
-	text := "12 + 3 / (8 - 5) * 2"
-	tok := []token.Token{
-		{Type: token.INTEGER, Value: int64(12)},
-		{Type: token.PLUS, Value: '+'},
-		{Type: token.INTEGER, Value: int64(3)},
-		{Type: token.DIV, Value: '/'},
-		{Type: token.LPAREN, Value: '('},
-		{Type: token.INTEGER, Value: int64(8)},
-		{Type: token.MINUS, Value: '-'},
-		{Type: token.INTEGER, Value: int64(5)},
-		{Type: token.RPAREN, Value: ')'},
-		{Type: token.MUL, Value: '*'},
-		{Type: token.INTEGER, Value: int64(2)},
-	}
+	text := `
+		PROGRAM Part10;
+		VAR
+		number     : INTEGER;
+		a, b, c, x : INTEGER;
+		y          : REAL;
 
-	tokenEqual := func(got, want token.Token) bool {
-
-		if want.Type != got.Type {
-			return false
-		}
-
-		gv := got.Value
-		wv := want.Value
-
-		switch got.Type {
-		case token.INTEGER:
-			return gv.(int64) == wv.(int64)
-		case token.PLUS, token.MINUS, token.DIV,
-			token.MUL, token.LPAREN, token.RPAREN:
-			return gv.(int32) == wv.(int32)
-		default:
-			return false
-		}
-	}
-
+		BEGIN {Part10}
+		BEGIN
+			number := 2;
+			a := number;
+			b := 10 * a + 10 * number DIV 4;
+			c := a - - b
+		END;
+		x := 11;
+		y := 20 / 7 + 3.14;
+		{ writeln('a = ', a); }
+		{ writeln('b = ', b); }
+		{ writeln('c = ', c); }
+		{ writeln('number = ', number); }
+		{ writeln('x = ', x); }
+		{ writeln('y = ', y); }
+		END.  {Part10}
+	`
 	lx := NewLexer(text, 0)
 
-	index := 0
 	for lx.currentChar != NULLCHAR {
-		curr := lx.GetNextToken()
-		if !tokenEqual(curr, tok[index]) {
-			t.Errorf("Expected %+v but got%+v\n", tok[index], curr)
-		}
-		index++
+		tok := lx.GetNextToken()
+		fmt.Println(tok)
+		t.Log(tok)
 	}
 }
